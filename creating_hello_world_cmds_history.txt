@@ -1,0 +1,68 @@
+Microsoft Windows [Version 10.0.15063]
+(c) 2017 Microsoft Corporation. All rights reserved.
+
+C:\Users\*****>cd documents/github/rhel7_cdk_hello_world
+
+C:\Users\*****\Documents\GitHub\RHEL7_CDK_Hello_World>oc cluster up
+Starting OpenShift using registry.access.redhat.com/openshift3/ose:v3.6.173.0.21 ...
+-- Checking OpenShift client ... OK
+-- Checking Docker client ... OK
+-- Checking Docker version ...
+   WARNING: Cannot verify Docker version
+-- Checking for existing OpenShift container ... FAIL
+   Error: unexpected error while checking OpenShift container state
+   Caused By:
+     Error: An error occurred trying to connect: Get http://%2F%2F.%2Fpipe%2Fdocker_engine/containers/origin/json: open //./pipe/docker_engine: The system cannot find the file specified.
+
+C:\Users\*****\Documents\GitHub\RHEL7_CDK_Hello_World>oc get services
+No resources found.
+
+C:\Users\*****\Documents\GitHub\RHEL7_CDK_Hello_World>oc new-app https://github.com/DarrenMoody/RHEL7_CDK_Hello_World.git --context-dir=nodejs_Hello_World --name=nodejs_Hello_World
+error: invalid name: nodejs_Hello_World. Must be an a lower case alphanumeric (a-z, and 0-9) string with a maximum length of 58 characters, where the first character is a letter (a-z), and the '-' character is allowed anywhere except the first or last character.
+
+C:\Users\*****\Documents\GitHub\RHEL7_CDK_Hello_World>oc new-app https://github.com/DarrenMoody/RHEL7_CDK_Hello_World.git --context-dir=nodejs_Hello_World --name=nodejs_hello_world
+error: invalid name: nodejs_hello_world. Must be an a lower case alphanumeric (a-z, and 0-9) string with a maximum length of 58 characters, where the first character is a letter (a-z), and the '-' character is allowed anywhere except the first or last character.
+
+C:\Users\*****\Documents\GitHub\RHEL7_CDK_Hello_World>oc new-app https://github.com/DarrenMoody/RHEL7_CDK_Hello_World.git --context-dir=nodejs_Hello_World --name=nodejs-hello-world
+--> Found image 6f97501 (3 weeks old) in image stream "openshift/nodejs" under tag "6" for "nodejs"
+
+    Node.js 6
+    ---------
+    Node.js 6 available as docker container is a base platform for building and running various Node.js 6 applications and frameworks. Node.js is a platform built on Chrome's JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices.
+
+    Tags: builder, nodejs, nodejs6
+
+    * The source repository appears to match: nodejs
+    * A source build using source code from https://github.com/DarrenMoody/RHEL7_CDK_Hello_World.git will be created
+      * The resulting image will be pushed to image stream "nodejs-hello-world:latest"
+      * Use 'start-build' to trigger a new build
+      * WARNING: this source repository may require credentials.
+                 Create a secret with your git credentials and use 'set build-secret' to assign it to the build config.
+    * This image will be deployed in deployment config "nodejs-hello-world"
+    * Port 8080/tcp will be load balanced by service "nodejs-hello-world"
+      * Other containers can access this service through the hostname "nodejs-hello-world"
+
+--> Creating resources ...
+    imagestream "nodejs-hello-world" created
+    buildconfig "nodejs-hello-world" created
+    deploymentconfig "nodejs-hello-world" created
+    service "nodejs-hello-world" created
+--> Success
+    Build scheduled, use 'oc logs -f bc/nodejs-hello-world' to track its progress.
+    Run 'oc status' to view your app.
+
+C:\Users\*****\Documents\GitHub\RHEL7_CDK_Hello_World>oc get services
+NAME                 CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+nodejs-hello-world   172.30.108.97   <none>        8080/TCP   37s
+
+C:\Users\*****\Documents\GitHub\RHEL7_CDK_Hello_World>oc expose service nodejs-hello-world
+route "nodejs-hello-world" exposed
+
+C:\Users\*****\Documents\GitHub\RHEL7_CDK_Hello_World>oc get routes
+NAME                 HOST/PORT                                            PATH      SERVICES             PORT       TERMINATION   WILDCARD
+nodejs-hello-world   nodejs-hello-world-myproject.192.168.99.100.nip.io             nodejs-hello-world   8080-tcp                 None
+
+C:\Users\*****\Documents\GitHub\RHEL7_CDK_Hello_World>minishift ssh
+Last login: Sun Dec 17 19:58:20 2017 from gateway
+[docker@minishift ~]$ curl nodejs-hello-world-myproject.192.168.99.100.nip.io
+Hello from NodeJS  at Mon Dec 18 2017 03:27:27 GMT+0000
